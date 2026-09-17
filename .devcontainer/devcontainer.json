@@ -1,0 +1,20 @@
+{
+    "name": "Advanced Databases - MySQL",
+
+    "dockerComposeFile": "docker-compose.yml",
+
+    "service": "workspace",
+
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "mtxr.sqltools",
+                "mtxr.sqltools-driver-mysql"
+            ]
+        }
+    },
+
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y default-mysql-client"
+}
