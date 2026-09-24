@@ -316,19 +316,11 @@ USERS                 DRIVERS                    CARS
 
 ---
 
-# 7. GitHub Repository and Codespaces Setup
+# 7. Using the Existing GitHub Codespace
 
-The following setup uses **MySQL 8** in GitHub Codespaces. The repository contains the SQL files, while the Codespace provides the MySQL server used to execute them.
+This activity uses the existing **Advanced-Databases-SQL** GitHub repository and its preconfigured Codespace environment. **Students do not need to configure MySQL or modify the `.devcontainer` files.**
 
-## Step 1 — Create the GitHub repository folder
-
-In your GitHub repository, create a folder such as:
-
-```text
-Lab-InstantRide-Activities/
-```
-
-Place these files in the folder:
+The activity files are located in:
 
 ```text
 Lab-InstantRide-Activities/
@@ -338,161 +330,47 @@ Lab-InstantRide-Activities/
 └── InstantRide_Activity_Set_2.sql
 ```
 
-The repository also needs the `.devcontainer` configuration described below so that a new Codespace automatically includes MySQL.
+## Step 1 — Open the existing Codespace
 
-A recommended repository structure is:
-
-```text
-Advanced-Databases-SQL/
-├── .devcontainer/
-│   ├── devcontainer.json
-│   └── docker-compose.yml
-├── Lab-InstantRide-Activities/
-│   ├── README.md
-│   ├── InstantRide_Setup.sql
-│   ├── InstantRide_Activity_Set_1.sql
-│   └── InstantRide_Activity_Set_2.sql
-└── ...
-```
-
-## Step 2 — Configure the Codespace
-
-Create `.devcontainer/devcontainer.json` at the repository root:
-
-```json
-{
-  "name": "Advanced Databases - MySQL",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "workspace",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-mysql"
-      ]
-    }
-  }
-}
-```
-
-Create `.devcontainer/docker-compose.yml`:
-
-```yaml
-services:
-  workspace:
-    image: mcr.microsoft.com/devcontainers/base:ubuntu
-    command: sleep infinity
-    volumes:
-      - ..:/workspaces/${COMPOSE_PROJECT_NAME}:cached
-    depends_on:
-      mysql:
-        condition: service_healthy
-
-  mysql:
-    image: mysql:8.0
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: InstantRide
-      MYSQL_USER: student
-      MYSQL_PASSWORD: student
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-    volumes:
-      - mysql-data:/var/lib/mysql
-
-volumes:
-  mysql-data:
-```
-
-This creates a MySQL 8 container and a student account:
-
-```text
-Host: mysql
-Port: 3306
-User: student
-Password: student
-Database: InstantRide
-```
-
-> These credentials are intended only for the temporary classroom Codespace environment.
-
-## Step 3 — Create a Codespace
-
-1. Open the GitHub repository.
+1. Open the **Advanced-Databases-SQL** repository on GitHub.
 2. Click **Code**.
 3. Select the **Codespaces** tab.
-4. Click **Create codespace on main**.
-5. Wait for VS Code in the browser to finish loading.
-6. The first creation may take a few minutes because the MySQL image and VS Code extensions must be installed.
+4. Create a new Codespace or open your existing Codespace.
+5. Wait until VS Code in the browser finishes loading.
 
-When the Codespace is ready, the repository files should appear in the Explorer on the left.
+The database environment is already configured for this repository.
 
-## Step 4 — Open a terminal
+## Step 2 — Open a terminal
 
 In Codespaces, select:
 
 **Terminal → New Terminal**
 
-The terminal prompt should appear at the bottom of the window.
-
-Check that MySQL is running:
-
-```bash
-mysqladmin -h mysql -u student -pstudent ping
-```
-
-Expected result:
-
-```text
-mysqld is alive
-```
-
-## Step 5 — Connect to MySQL
-
-From the Codespaces terminal, enter:
+Connect to MySQL:
 
 ```bash
 mysql -h mysql -u student -pstudent
 ```
 
-You should see the MySQL prompt:
+When the connection succeeds, you will see the MySQL prompt:
 
 ```text
 mysql>
 ```
 
-At this prompt, SQL commands can be entered directly.
+## Step 3 — Load the original InstantRide database
 
-For example:
-
-```sql
-SHOW DATABASES;
-```
-
-Exit the MySQL client with:
+At the `mysql>` prompt, use the `SOURCE` command:
 
 ```sql
-exit;
+SOURCE Lab-InstantRide-Activities/InstantRide_Setup.sql;
 ```
 
-## Step 6 — Build/reset the InstantRide database
+The setup script creates the original InstantRide database, creates the four starting tables, and loads the original dataset.
 
-The setup script creates the original four tables and loads the original dataset.
+> Run `SOURCE` from the MySQL prompt, not from the normal Bash terminal.
 
-From the repository terminal, run:
-
-```bash
-mysql -h mysql -u student -pstudent < Lab-InstantRide-Activities/InstantRide_Setup.sql
-```
-
-`InstantRide_Setup.sql` begins by dropping and recreating the `InstantRide` database. Therefore, it can also be used whenever you want to **reset the activity back to its original state**.
-
-At the end of the script, you should see the original tables:
+At the end of the setup, you should see the original tables:
 
 ```text
 CARS
@@ -510,15 +388,9 @@ USERS      8
 TRAVELS   10
 ```
 
-## Step 7 — Verify the database manually
+## Step 4 — Verify the database
 
-Connect to MySQL:
-
-```bash
-mysql -h mysql -u student -pstudent
-```
-
-Then run:
+At the `mysql>` prompt, run:
 
 ```sql
 USE InstantRide;
@@ -533,33 +405,21 @@ SELECT * FROM TRAVELS;
 
 At this point the starting database is ready.
 
-Do **not** expect to see `MAINTENANCE_TYPES`, `MAINTENANCES`, or `ACTIVE_DRIVERS` yet. Students create those tables during Activity Set 1.
+You should **not** see `MAINTENANCE_TYPES`, `MAINTENANCES`, or `ACTIVE_DRIVERS` yet. Those tables are created during Activity Set 1.
 
-## Step 8 — Work on Activity Set 1
+## Step 5 — Complete Activity Set 1
 
 Open:
 
 ```text
-InstantRide_Activity_Set_1.sql
+Lab-InstantRide-Activities/InstantRide_Activity_Set_1.sql
 ```
 
-Activity Set 1 contains six tasks. Complete them in order because later tasks depend on objects created by earlier tasks.
+The file contains the six tasks, guided hints, and SQL statement templates. Write your SQL in the spaces provided.
 
-To execute an entire SQL file from the terminal:
+Complete the tasks **in order**, because later tasks depend on database objects created by earlier tasks.
 
-```bash
-mysql -h mysql -u student -pstudent InstantRide < Lab-InstantRide-Activities/InstantRide_Activity_Set_1.sql
-```
-
-During class, however, it is usually better to execute **one task at a time**. This lets students inspect the result before moving to the next task.
-
-You can connect to MySQL and paste/run only the statement for the current task:
-
-```bash
-mysql -h mysql -u student -pstudent InstantRide
-```
-
-Then verify objects as needed with commands such as:
+You can execute your SQL statements at the `mysql>` prompt and use commands such as these to verify your work:
 
 ```sql
 SHOW TABLES;
@@ -569,29 +429,27 @@ DESCRIBE ACTIVE_DRIVERS;
 SHOW INDEX FROM ACTIVE_DRIVERS;
 ```
 
-## Step 9 — Work on Activity Set 2
+## Step 6 — Complete Activity Set 2
 
-Activity Set 2 assumes that **all six tasks in Set 1 have already been completed**.
-
-Open:
+After completing all six tasks in Set 1, open:
 
 ```text
-InstantRide_Activity_Set_2.sql
+Lab-InstantRide-Activities/InstantRide_Activity_Set_2.sql
 ```
 
-Then complete Tasks 1–6 in order.
+Complete Tasks 1–6 in order.
 
-Do not reset the database between Set 1 and Set 2.
+**Do not reset the database between Set 1 and Set 2.** Activity Set 2 depends on the changes made in Activity Set 1.
 
-## Step 10 — Reset the activity when needed
+## Step 7 — Reset the database if needed
 
-If you want to start over, exit the MySQL client and run:
+If you need to start the activities over, stay at or reconnect to the `mysql>` prompt and run:
 
-```bash
-mysql -h mysql -u student -pstudent < Lab-InstantRide-Activities/InstantRide_Setup.sql
+```sql
+SOURCE Lab-InstantRide-Activities/InstantRide_Setup.sql;
 ```
 
-This removes the activity-created objects and restores the original InstantRide database and dataset.
+The setup script drops and recreates the InstantRide database, restoring the original tables and dataset.
 
 You can then begin Activity Set 1 again.
 
@@ -601,44 +459,36 @@ You can then begin Activity Set 1 again.
 
 ### Bash terminal vs. MySQL prompt
 
-These are different environments.
+The normal Codespaces terminal and the MySQL client are different environments.
 
-At a normal terminal prompt, commands such as this are shell commands:
-
-```text
-$
-```
-
-Do not type:
-
-```sql
-SHOW TABLES;
-```
-
-directly at the Bash prompt.
-
-First connect with:
+At the normal terminal prompt, connect to MySQL with:
 
 ```bash
 mysql -h mysql -u student -pstudent
 ```
 
-Then, when you see:
+After you see:
 
 ```text
 mysql>
 ```
 
-you can run SQL commands such as:
+you can enter SQL commands:
 
 ```sql
 USE InstantRide;
 SHOW TABLES;
 ```
 
+The `SOURCE` command is also entered at the `mysql>` prompt:
+
+```sql
+SOURCE Lab-InstantRide-Activities/InstantRide_Setup.sql;
+```
+
 ### Re-running activity statements
 
-Some activity statements intentionally change the database structure or insert data. Running them twice may result in messages such as:
+Some tasks create tables, add columns or constraints, or insert data. If you execute the same task more than once, MySQL may report errors such as:
 
 ```text
 Table already exists
@@ -647,17 +497,22 @@ Duplicate column
 Duplicate constraint/index name
 ```
 
-That does not necessarily mean the original statement was wrong; it may simply mean the task was already completed.
+This may simply mean that the task has already been completed.
 
-If the database state becomes confusing, run `InstantRide_Setup.sql` again to return to the original starting point.
+If you are unsure of the current database state, reset it with:
 
-### Recommended classroom workflow
+```sql
+SOURCE Lab-InstantRide-Activities/InstantRide_Setup.sql;
+```
 
-For demonstrations:
+Then begin Activity Set 1 again.
 
-1. Reset with `InstantRide_Setup.sql` before class if necessary.
-2. Complete one activity task.
-3. Verify the result with `SHOW`, `DESCRIBE`, or `SELECT`.
-4. Discuss what changed.
-5. Continue to the next task.
-6. Keep the same database state when moving from Set 1 to Set 2.
+### Recommended activity workflow
+
+1. Open the existing Codespace.
+2. Connect to MySQL.
+3. Use `SOURCE` to load/reset the original InstantRide database.
+4. Complete one task at a time.
+5. Verify the result with `SHOW`, `DESCRIBE`, or `SELECT`.
+6. Continue through Set 1.
+7. Continue directly to Set 2 without resetting the database.
