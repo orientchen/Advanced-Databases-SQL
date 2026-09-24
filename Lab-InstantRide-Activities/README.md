@@ -349,15 +349,17 @@ In Codespaces, select:
 Connect to MySQL:
 
 ```bash
-mysql -h mysql -u student -pstudent
+mysql -h mysql -u student -p
 ```
-
+password: student
 When the connection succeeds, you will see the MySQL prompt:
 
 ```text
 mysql>
 ```
-
+```text
+mysql> use advanceddb;
+```
 ## Step 3 — Load the original InstantRide database
 
 At the `mysql>` prompt, use the `SOURCE` command:
