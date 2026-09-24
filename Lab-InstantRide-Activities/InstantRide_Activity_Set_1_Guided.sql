@@ -9,7 +9,7 @@
 -- Before starting, make sure InstantRide_Setup.sql has been executed.
 -- =====================================================================
 
-USE InstantRide;
+USE advanceddb;
 
 -- =====================================================================
 -- Task 1 — Create MAINTENANCE_TYPES
