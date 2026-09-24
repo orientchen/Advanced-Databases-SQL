@@ -9,9 +9,9 @@
 -- here because students create them in the activities.
 -- ============================================================
 
-DROP DATABASE IF EXISTS InstantRide;
-CREATE DATABASE InstantRide;
-USE InstantRide;
+-- DROP DATABASE IF EXISTS advanceddb;
+-- CREATE DATABASE advanceddb;
+USE advanceddb;
 
 -- ============================================================
 -- Table: CARS
