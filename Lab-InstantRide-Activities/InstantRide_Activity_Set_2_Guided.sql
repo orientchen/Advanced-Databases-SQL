@@ -6,7 +6,7 @@
 -- Set 2 depends on tables and constraints created in Set 1.
 -- =====================================================================
 
-USE InstantRide;
+USE advanceddb;
 
 -- =====================================================================
 -- Task 1 — Set the default maintenance price
